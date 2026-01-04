@@ -1,5 +1,5 @@
 import asyncHandler from 'express-async-handler';
-import { createProduct, getProducts, getProductById, updateProduct, deleteProduct, getOfferProducts } from '../services/productService.js';
+import { createProduct, getProducts, getProductById, updateProduct, deleteProduct, getOfferProducts , searchProducts , autocompleteProducts } from '../services/productService.js';
 import  uploadToImgBB  from '../utils/uploadToImgBB.js';
 // @desc    Create a new product
 // @route   POST /api/products
@@ -127,3 +127,27 @@ export const getOffers = asyncHandler(async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
+export const autocomplete = asyncHandler(async (req, res) => {
+    const { keyword } = req.query;
+    const { limit = 5 } = req.query;
+  
+    try {
+      const results = await autocompleteProducts(keyword, parseInt(limit));
+      res.json(results);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  export const search = asyncHandler(async (req, res) => {
+    const { keyword } = req.query;
+    const { page = 1, limit = 10 } = req.query;
+  
+    try {
+      const results = await searchProducts(keyword, parseInt(page), parseInt(limit));
+      res.json(results);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  });

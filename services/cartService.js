@@ -10,7 +10,8 @@ export const getCartByUserId = async (userId) => {
   return cart;
 };
 
-export const addItemToCart = async (userId, productId, qty) => {
+export const addItemToCart = async (userId, productId, qtyParam) => {
+  const qty = Number(qtyParam);
   const cart = await getCartByUserId(userId);
   const product = await Product.findById(productId);
 
@@ -32,7 +33,8 @@ export const addItemToCart = async (userId, productId, qty) => {
   return cart;
 };
 
-export const updateCartItemQuantity = async (userId, productId, qty) => {
+export const updateCartItemQuantity = async (userId, productId, qtyParam) => {
+    const qty = Number(qtyParam);
     // console.log("updateCartItemQuantity" + userId + productId + qty);
   const cart = await getCartByUserId(userId);
 //   console.log(cart);

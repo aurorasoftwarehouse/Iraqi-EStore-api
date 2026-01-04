@@ -1,17 +1,33 @@
 import asyncHandler from 'express-async-handler';
 import { createOrder, getOrdersByUserId, getAllOrders, updateOrderStatus, deleteOrder } from '../services/orderService.js';
 
+const processingOrders = new Set();
+
 // @desc    Create new order
 // @route   POST /api/orders
 // @access  Private
 export const create = asyncHandler(async (req, res) => {
   const { userId, address, phone } = req.body;
 
+  if (!userId || !address || !phone) {
+    res.status(400);
+    throw new Error('Please fill in all required fields');
+  }
+
+  if (processingOrders.has(userId)) {
+    res.status(409);
+    throw new Error('Order creation already in progress for this user. Please wait.');
+  }
+
+  processingOrders.add(userId);
+
   try {
     const order = await createOrder(userId, address, phone);
     res.status(201).json(order);
   } catch (error) {
     res.status(400).json({ message: error.message });
+  } finally {
+    processingOrders.delete(userId);
   }
 });
 

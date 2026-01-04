@@ -130,3 +130,69 @@ export const getOfferProducts = async (page = 1, limit = 10) => {
   const count = await Product.countDocuments(query);
   return { products, totalPages: Math.ceil(count / limit), currentPage: page };
 };
+// ==========================
+// Search Products (منفصل)
+// ==========================
+export const searchProducts = async (keyword, page = 1, limit = 10) => {
+    if (!keyword) return { products: [], totalPages: 0, currentPage: page };
+  
+    // البحث بالكلمة المفتاحية باستخدام Text Index
+    const query = { $text: { $search: keyword } };
+  
+    // جلب المنتجات مع الحقول المهمة فقط
+    const products = await Product.find(query, 'name price discountPrice discountPercent discountActive stock category image')
+      .populate('category', 'name')
+      .sort({ score: { $meta: 'textScore' } }) // ترتيب حسب التطابق مع البحث
+      .limit(limit)
+      .skip((page - 1) * limit)
+      .lean();
+  
+    // حساب السعر النهائي لكل منتج
+    const productsWithFinalPrice = products.map(p => {
+      let finalPrice = p.price;
+      if (p.discountActive) {
+        if (p.discountPrice != null) finalPrice = p.discountPrice;
+        else if (p.discountPercent != null) finalPrice = p.price - (p.price * p.discountPercent / 100);
+      }
+      return { ...p, finalPrice };
+    });
+  
+    const count = await Product.countDocuments(query);
+  
+    return {
+      products: productsWithFinalPrice,
+      totalPages: Math.ceil(count / limit),
+      currentPage: page
+    };
+  };
+  // ==========================
+// Autocomplete Products
+// ==========================
+export const autocompleteProducts = async (keyword, limit = 5) => {
+    if (!keyword) return [];
+  
+    const regex = new RegExp(`^${keyword}`, 'i'); // يبدأ بالكلمة المدخلة، case-insensitive
+  
+    const products = await Product.find(
+      { name: regex },
+      { name: 1, price: 1, discountPrice: 1, discountPercent: 1, discountActive: 1 } // جلب الحقول المهمة
+    )
+      .sort({ name: 1 }) // ترتيب أبجدي
+      .limit(limit)
+      .lean();
+  
+    return products.map(p => {
+      let finalPrice = p.price;
+      if (p.discountActive) {
+        if (p.discountPrice != null) finalPrice = p.discountPrice;
+        else if (p.discountPercent != null) finalPrice = p.price - (p.price * p.discountPercent / 100);
+      }
+  
+      return {
+        _id: p._id,
+        name: p.name,
+        finalPrice
+      };
+    });
+  };
+  
