@@ -1,7 +1,13 @@
 import Product from '../models/Product.js';
 
-export const createProduct = async (name, price, discountedPrice, discountActive, category, stock, image) => {
-    // Safety check
+export const createProduct = async (name, price, discountedPrice, discountActive, category, stock, image, weight) => {
+    // تحويل القيم الرقمية والـ boolean
+    price = Number(price);
+    discountedPrice = Number(discountedPrice);
+    discountActive = discountActive === true || discountActive === "true"; // normalize boolean
+    weight = weight ? Number(weight) : null;
+    stock = stock ? Number(stock) : 0;
+  
     if (price <= 0) {
       throw new Error("Price must be greater than 0");
     }
@@ -10,13 +16,21 @@ export const createProduct = async (name, price, discountedPrice, discountActive
     let finalDiscountPrice = price;
   
     if (discountActive && discountedPrice < price) {
-      finalDiscountPercent = ((price - discountedPrice) / price) * 100;
-      finalDiscountPercent = Math.max(0, parseFloat(finalDiscountPercent.toFixed(2))); // تقريب للـ 2 decimal
+      const calc = ((price - discountedPrice) / price) * 100;
+      finalDiscountPercent = Math.max(0, Number(calc.toFixed(2)));
       finalDiscountPrice = discountedPrice;
     } else {
       discountActive = false;
       finalDiscountPrice = price;
     }
+  
+    console.log({
+      price,
+      discountedPrice,
+      discountActive,
+      finalDiscountPercent,
+      finalDiscountPrice,
+    });
   
     const product = new Product({
       name,
@@ -27,6 +41,7 @@ export const createProduct = async (name, price, discountedPrice, discountActive
       category,
       stock,
       image,
+      weight,
     });
   
     await product.save();
@@ -38,7 +53,7 @@ export const createProduct = async (name, price, discountedPrice, discountActive
 export const getProducts = async (categoryId = null, page = 1, limit = 10) => {
   const query = categoryId ? { category: categoryId } : {};
   const products = await Product.find(query)
-    .populate('category', 'name')
+    .populate('category') // Populate all category fields
     .limit(limit * 1)
     .skip((page - 1) * limit)
     .exec();
@@ -47,7 +62,7 @@ export const getProducts = async (categoryId = null, page = 1, limit = 10) => {
 };
 
 export const getProductById = async (id) => {
-  return await Product.findById(id).populate('category', 'name');
+  return await Product.findById(id).populate('category');
 };
 
 export const updateProduct = async (id, updates) => {
@@ -61,7 +76,7 @@ export const updateProduct = async (id, updates) => {
   
     // حذف أي قيمة undefined لتجنب مسح بيانات MongoDB بالخطأ
     Object.keys(updates).forEach(
-      key => updates[key] === undefined && delete updates[key]
+      key => (updates[key] === undefined || updates[key] === '') && delete updates[key]
     );
   
     // حساب الخصم بشكل ديناميكي
@@ -123,7 +138,7 @@ export const deleteProduct = async (id) => {
 export const getOfferProducts = async (page = 1, limit = 10) => {
   const query = { discountActive: true, $expr: { $lt: ['$discountPrice', '$price'] } };
   const products = await Product.find(query)
-    .populate('category', 'name')
+    .populate('category') // Populate all category fields
     .limit(limit * 1)
     .skip((page - 1) * limit)
     .exec();

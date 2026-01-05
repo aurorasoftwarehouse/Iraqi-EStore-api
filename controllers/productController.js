@@ -5,8 +5,9 @@ import  uploadToImgBB  from '../utils/uploadToImgBB.js';
 // @route   POST /api/products
 // @access  Private/Admin
 export const create = asyncHandler(async (req, res) => {
-  const { name, price, discountedPrice, discountActive, category, stock, description, brand } = req.body;
-
+  const { name, price, discountedPrice, discountActive, category, stock, weight } = req.body;
+console.log(req.body);
+  // Check if all required fields are provided
   if (!req.file) {
     return res.status(400).json({
       error: "Missing Asset (ملف مرفق مفقود)",
@@ -24,7 +25,7 @@ export const create = asyncHandler(async (req, res) => {
   const img = await uploadToImgBB(req.file.buffer);
 
   try {
-    const product = await createProduct(name, price, discountedPrice, discountActive, category, stock, img.url);
+    const product = await createProduct(name, price, discountedPrice, discountActive, category, stock, img.url, weight);
     res.status(201).json(product);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -75,8 +76,9 @@ const parseFormData = (body) => {
     if (body.discountActive === "true") updates.discountActive = true;
     if (body.discountActive === "false") updates.discountActive = false;
     if (body.category) updates.category = body.category;
-    if (body.description) updates.description = body.description;
-    if (body.brand) updates.brand = body.brand;
+    // if (body.description) updates.description = body.description;
+    // if (body.brand) updates.brand = body.brand;
+    if (body.weight !== undefined && body.weight !== "") updates.weight = parseFloat(body.weight);
   
     return updates;
   };

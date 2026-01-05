@@ -58,9 +58,7 @@ const config = {
 | `category`     | String  | Yes      | Category ID                               |
 | `stock`        | Number  | No       | Stock quantity                            |
 | `image`        | File    | Yes      | Product image (field name must be 'image')|
-| `description`  | String  | No       | Product description                       |
-| `brand`        | String  | No       | Product brand                             |
-
+| `weights`      | text   | No       | Weights (if applicable)                    |
 **Example with `axios`:**
 
 ```javascript
@@ -97,8 +95,7 @@ const newProductData = {
   discountActive: 'true', // Send as string
   category: '60d5ec49f8c7b00015f6e4a1', // Replace with actual category ID
   stock: 50,
-  description: 'A wonderful example product.',
-  brand: 'ExampleBrand'
+  weights: '100g, 200g, 300g'
 };
 const imageInput = document.querySelector('#productImage'); // Assuming an input type="file" with id="productImage"
 const imageFile = imageInput.files[0];

@@ -137,16 +137,36 @@ const loginMobile = async (userData) => {
   }
 };
 ```
+### 3. التحقق من الرمز المميز (Verify Token)
+- وصف الخلفية: من خلال `verifyAccessToken` في <mcfile name="authController.js" path="d:\new valume 1 D\my project\projects with dina abaza\e-comm\controllers\authController.js"></mcfile>
+- مسار الخلفية: `POST /api/auth/verify`
 
-### 3. تحديث الرمز المميز (refresh token)
+#### مثال واجهة الأمامية
+```javascript
+const verifyToken = async () => {
+  try {
+    const response = await fetch('  URL_ADDRESS:5000/api/auth/verify', {
+      method: 'POST',
+      credentials: 'include' // لإرسال الكوكيز
+    });
+    const data = await response.json();
+    console.log('التحقق من الرمز المميز:', data);
+    return data.valid;      
+  }
+}   
+```
+
+
+
+### 4. تحديث الرمز المميز (refresh token)
 - وصف الخلفية: من خلال `refreshAccessToken` في <mcfile name="authController.js" path="d:\new valume 1 D\my project\projects with dina abaza\e-comm\controllers\authController.js"></mcfile>
-- مسار الخلفية: `POST /api/auth/refresh-token`
+- مسار الخلفية: `POST /api/auth/refresh`
 
 #### مثال واجهة الأمامية
 ```javascript
 const refreshToken = async () => {
   try {
-    const response = await fetch('http://localhost:5000/api/auth/refresh-token', {
+    const response = await fetch('http://localhost:5000/api/auth/refresh', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ client: 'web' }),
@@ -159,9 +179,10 @@ const refreshToken = async () => {
 };
 ```
 
-### 4. تسجيل الدخول كمسؤول (admin)
+### 5. تسجيل الدخول كمسؤول (admin)
 - وصف الخلفية: من خلال `logiadmin` في <mcfile name="authController.js" path="d:\new valume 1 D\my project\projects with dina abaza\e-comm\controllers\authController.js"></mcfile> و <mcsymbol name="adminAuthMiddleware" filename="adminAuthMiddleware.js" path="d:\new valume 1 D\my project\projects with dina abaza\e-comm\middleware\adminAuthMiddleware.js" startline="1" type="function"></mcsymbol>
 - مسار الخلفية: `POST /api/auth/loginadmin`
+- الحقول المطلوبة: `email`, `password`, `client` (اختياري، الافتراضي `web`)
 
 #### مثال واجهة الأمامية
 ```javascript
@@ -173,6 +194,107 @@ const loginAdmin = async (adminData) => {
     console.log('تم تسجيل الدخول كمسؤول:', response.data);
   } catch (error) {
     console.error('خطأ تسجيل الدخول كمسؤول:', error.response.data);
+  }
+};
+```
+
+### 7. تحديث الرمز المميز للمسؤول (Admin Refresh Token)
+- وصف الخلفية: من خلال `AdminRefreshAccessToken` في <mcfile name="authController.js" path="d:\new valume 1 D\my project\projects with dina abaza\e-comm\controllers\authController.js"></mcfile>
+- مسار الخلفية: `POST /api/auth/adminrefresh`
+- الحقول المطلوبة: `client` (اختياري، الافتراضي `web`)، `refreshToken` (مطلوب للموبايل فقط في الـ body أو الـ headers)
+
+#### مثال واجهة الأمامية (Web - Cookies)
+```javascript
+const adminRefreshTokenWeb = async () => {
+  try {
+    const response = await fetch('http://localhost:5000/api/auth/adminrefresh', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ client: 'web' }),
+      credentials: 'include'
+    });
+    console.log('تم تحديث الرمز المميز للمسؤول (ويب):', response.data);
+  } catch (error) {
+    console.error('خطأ تحديث الرمز المميز للمسؤول (ويب):', error);
+  }
+};
+```
+
+#### مثال واجهة الأمامية (Mobile - Tokens)
+```javascript
+const adminRefreshTokenMobile = async (refreshToken) => {
+  try {
+    const response = await axios.post('http://localhost:5000/api/auth/adminrefresh', {
+      client: 'mobile',
+      refreshToken: refreshToken // يجب إرسال الـ refreshToken هنا
+    });
+    console.log('تم تحديث الرمز المميز للمسؤول (موبايل):', response.data);
+    return response.data.accessToken;
+  } catch (error) {
+    console.error('خطأ تحديث الرمز المميز للمسؤول (موبايل):', error.response.data);
+  }
+};
+```
+
+### 8. التحقق من الرمز المميز للمسؤول (Verify Admin Token)
+- وصف الخلفية: من خلال `verifyadminAccessToken` في <mcfile name="authController.js" path="d:\new valume 1 D\my project\projects with dina abaza\e-comm\controllers\authController.js"></mcfile>
+- مسار الخلفية: `POST /api/auth/verifyadmin`
+- الحقول المطلوبة: لا توجد حقول في الـ body، يتم التحقق من الـ `accessToken` من الكوكيز.
+
+#### مثال واجهة الأمامية
+```javascript
+const verifyAdminToken = async () => {
+  try {
+    const response = await fetch('http://localhost:5000/api/auth/verifyadmin', {
+      method: 'POST',
+      credentials: 'include' // لإرسال الكوكيز
+    });
+    const data = await response.json();
+    console.log('التحقق من رمز المسؤول:', data);
+    return data.valid;
+  } catch (error) {
+    console.error('خطأ التحقق من رمز المسؤول:', error);
+    return false;
+  }
+};
+```
+
+### 9. تسجيل الخروج (Logout)
+- وصف الخلفية: من خلال `logoutUser` في <mcfile name="authController.js" path="d:\new valume 1 D\my project\projects with dina abaza\e-comm\controllers\authController.js"></mcfile>
+- مسار الخلفية: `POST /api/auth/logout`
+- الحقول المطلوبة: `client` (اختياري، الافتراضي `web`)
+
+#### مثال واجهة الأمامية (Web - Cookies)
+```javascript
+const logoutWeb = async () => {
+  try {
+    const response = await fetch('http://localhost:5000/api/auth/logout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ client: 'web' }),
+      credentials: 'include' // لإرسال الكوكيز لمسحها
+    });
+    const data = await response.json();
+    console.log('تسجيل الخروج (ويب):', data.message);
+  } catch (error) {
+    console.error('خطأ تسجيل الخروج (ويب):', error);
+  }
+};
+```
+
+#### مثال واجهة الأمامية (Mobile - Tokens)
+```javascript
+const logoutMobile = async () => {
+  try {
+    const response = await axios.post('http://localhost:5000/api/auth/logout', {
+      client: 'mobile'
+    });
+    // يجب على العميل مسح التوكنات محليًا هنا (مثلاً من localStorage)
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    console.log('تسجيل الخروج (موبايل):', response.data.message);
+  } catch (error) {
+    console.error('خطأ تسجيل الخروج (موبايل):', error.response.data);
   }
 };
 ```

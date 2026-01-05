@@ -38,6 +38,11 @@ const ProductSchema = new mongoose.Schema({
   image: {
     type: String,
     required: false
+  },
+  weight: {
+    type: Number,
+    min: 0,
+    required: false // Make it optional for now, can be changed later if needed
   }
 }, {
   timestamps: true
