@@ -70,7 +70,7 @@ export const createOrder = async (userId, address, phone) => {
     };
   
     await sendOrderConfirmationEmail(orderDetails);
-    // await sendNewOrderNotification(orderDetails);
+    await sendNewOrderNotification(orderDetails);
   
     // 5) تفريغ السلة بعد إنشاء الطلب
     await Cart.updateOne({ userId }, { items: [] });

@@ -11,7 +11,9 @@ import productRoutes from './routes/productRoutes.js';
 import cartRoutes from './routes/cartRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import siteSettingsRoutes from './routes/siteSettingsRoutes.js';
+import storeRoutes from './routes/storeRoutes.js';
 import { notFound, errorHandler } from './middleware/errorHandler.js';
+import { startTelegramBot } from './services/telegramService.js';
 
 dotenv.config();
 
@@ -51,6 +53,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/settings', siteSettingsRoutes);
+app.use('/api/storeBoot', storeRoutes);
 
 app.get('/', (req, res) => {
   res.send('E-commerce API is running...');
@@ -63,4 +66,5 @@ app.use(errorHandler);
 // Start the server
 app.listen(PORT, () => {
   console.log(`Server running on port http://localhost:${PORT}`);
+  startTelegramBot();
 });
