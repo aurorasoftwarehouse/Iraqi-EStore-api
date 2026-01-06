@@ -30,7 +30,7 @@ app.use(cookieParser());
 
 const corsOptions = {
 
-    origin: ["http://localhost:5173" , "http://localhost:3000" , "https://58a07fc147ce.ngrok-free.app"],
+    origin: ["https://grocy-web.vercel.app" , "http://localhost:3000" , "https://58a07fc147ce.ngrok-free.app"],
     optionsSuccessStatus: 200,
     credentials: true
 };
