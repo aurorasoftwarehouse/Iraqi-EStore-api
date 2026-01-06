@@ -7,7 +7,7 @@ import  uploadToImgBB  from '../utils/uploadToImgBB.js';
 // @access  Private/Admin
 export const create = asyncHandler(async (req, res) => {
   const { name, price, discountedPrice, discountActive, category, stock, weight } = req.body;
-console.log(req.body);
+// console.log(req.body);
   // Check if all required fields are provided
   if (!req.file) {
     return res.status(400).json({
