@@ -183,6 +183,11 @@ export const searchProducts = async (keyword, page = 1, limit = 10) => {
   export const getProductCount = async () => {
     return await Product.countDocuments();
   };
+
+  export const getOfferProductCount = async () => {
+    const query = { discountActive: true, $expr: { $lt: ['$discountPrice', '$price'] } };
+    return await Product.countDocuments(query);
+  };
   // ==========================
 // Autocomplete Products
 // ==========================
