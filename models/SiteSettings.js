@@ -13,6 +13,22 @@ const SiteSettingsSchema = new mongoose.Schema({
     type: String,
     required: false
   },
+  facebookLink: {
+    type: String,
+    required: false
+  },
+  instagramLink: {
+    type: String,
+    required: false
+  },
+  whatsappLink: {
+    type: String,
+    required: false
+  },
+  tiktokLink: {
+    type: String,
+    required: false
+  },
   telegramChatId: {
     type: String,
     required: false

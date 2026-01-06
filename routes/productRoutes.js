@@ -1,5 +1,5 @@
 import express from 'express';
-import { create, getAll, getById, update, remove, getOffers, search, autocomplete } from '../controllers/productController.js';
+import { create, getAll, getById, update, remove, getOffers, search, autocomplete, getCount } from '../controllers/productController.js';
 import apiLimiter from '../middleware/rateLimitMiddleware.js';
 import { authMiddleware as protect } from '../middleware/authMiddleware.js';
 import { adminAuthMiddleware as authorize } from '../middleware/adminAuthMiddleware.js';
@@ -18,6 +18,9 @@ router.route('/offers')
 
 router.route('/search')
   .get(apiLimiter, search);
+
+router.route('/count')
+  .get(getCount);
 
 router.route('/autocomplete')
   .get(apiLimiter, autocomplete);

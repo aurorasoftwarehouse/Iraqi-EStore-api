@@ -174,11 +174,14 @@ export const searchProducts = async (keyword, page = 1, limit = 10) => {
   
     const count = await Product.countDocuments(query);
   
-    return {
-      products: productsWithFinalPrice,
+    return { products: productsWithFinalPrice,
       totalPages: Math.ceil(count / limit),
       currentPage: page
     };
+  };
+  
+  export const getProductCount = async () => {
+    return await Product.countDocuments();
   };
   // ==========================
 // Autocomplete Products

@@ -6,77 +6,6 @@
 
 ## نقطة نهاية API
 
-
-`GET /api/categories`
-
-تقوم نقطة النهاية هذه بجلب جميع الفئات. لا تتطلب مصادقة للوصول العام.
-
-### أمثلة جلب الفئات
-
-فيما يلي أمثلة لكيفية جلب الفئات باستخدام طرق مختلفة:
-
-#### 1. استخدام `fetch` (واجهة برمجة تطبيقات المتصفح الأصلية)
-
-```javascript
-// جلب جميع الفئات
-fetch('http://localhost:5000/api/categories')
-  .then(response => {
-    if (!response.ok) {
-      throw new Error(`خطأ HTTP! الحالة: ${response.status}`);
-    }
-    return response.json();
-  })
-  .then(data => {
-    console.log('الفئات (fetch):', data);
-  })
-  .catch(error => {
-    console.error('خطأ أثناء جلب الفئات باستخدام fetch:', error);
-  });
-
-// جلب الفئات حسب المعرف (مثال: categoryId = 'someCategoryId')
-// استبدل 'someCategoryId' بمعرف فئة حقيقي
-fetch('http://localhost:5000/api/categories/someCategoryId')
-  .then(response => {
-    if (!response.ok) {
-      throw new Error(`خطأ HTTP! الحالة: ${response.status}`);
-    }
-    return response.json();
-  })
-  .then(data => {
-    console.log('الفئة حسب المعرف (fetch):', data);
-  })
-  .catch(error => {
-    console.error('خطأ أثناء جلب الفئة حسب المعرف باستخدام fetch:', error);
-  });
-```
-
-#### 2. استخدام `axios` (مكتبة عميل HTTP شائعة)
-
-أولاً، تأكد من تثبيت `axios`:
-`npm install axios` أو `yarn add axios`
-
-```javascript
-import axios from 'axios';
-
-// جلب جميع الفئات
-axios.get('http://localhost:5000/api/categories')
-  .then(response => {
-    console.log('الفئات (axios):', response.data);
-  })
-  .catch(error => {
-    console.error('خطأ أثناء جلب الفئات باستخدام axios:', error);
-  });
-
-// جلب الفئات حسب المعرف (مثال: categoryId = 'someCategoryId')
-// استبدل 'someCategoryId' بمعرف فئة حقيقي
-axios.get('http://localhost:5000/api/categories/someCategoryId')
-  .then(response => {
-    console.log('الفئة حسب المعرف (axios):', response.data);
-  })
-  .catch(error => {
-    console.error('خطأ أثناء جلب الفئة حسب المعرف باستخدام axios:', error);
-  });
-
 ## قسم 2: تفاعل واجهة الأمامية مع نظام المصادقة
 
 ### 1. إنشاء حساب مستخدم (من خلال <mcfile name="authController.js" path="d:\new valume 1 D\my project\projects with dina abaza\e-comm\controllers\authController.js"></mcfile>)
@@ -335,7 +264,81 @@ const logoutMobile = async () => {
 ```
 
 
-## ملاحظات هامة
-- استبدل `http://localhost:5000` بعنوان URL الأساسي لواجهة برمجة التطبيقات الفعلية إذا كان مختلفًا في بيئة النشر الخاصة بك.
+## قس: إدارة إعدادات الموقع (Site Settings)
+
+تتيح واجهة برمجة التطبيقات هذه للمسؤولين تعديل إعدادات الموقع العامة، بما في ذلك معلومات الاتصال وروابط وسائل التواصل الاجتماعي. يمكن للواجهة الأمامية استخدام هذه الإعدادات لعرضها في تذييل الموقع أو صفحات الاتصال.
+
+### 1. جلب إعدادات الموقع (Get Site Settings)
+-   **الوصف:** يجلب جميع إعدادات الموقع الحالية.
+-   **مسار الخلفية:** `GET /api/settings`
+-   **الوصول:** عام (Public)
+
+#### مثال واجهة الأمامية (axios)
+```javascript
+import axios from 'axios';
+
+const getSiteSettings = async () => {
+  try {
+    const response = await axios.get('http://localhost:5000/api/settings');
+    console.log('إعدادات الموقع:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('خطأ في جلب إعدادات الموقع:', error.response ? error.response.data : error.message);
+    return null;
+  }
+};
+
+getSiteSettings();
+```
+
+### 2. تحديث إعدادات الموقع (Update Site Settings)
+-   **الوصف:** يقوم بتحديث إعدادات الموقع. يتطلب مصادقة المسؤول.
+-   **مسار الخلفية:** `PUT /api/settings`
+-   **الوصول:** خاص/مسؤول (Private/Admin)
+
+#### الحقول المطلوبة في جسم الطلب (Request Body Fields)
+
+| الحقل            | النوع    | الوصف                                     | مثال                                     |
+| :--------------- | :------ | :---------------------------------------- | :---------------------------------------- |
+| `footerText`     | `String`  | نص التذييل الذي يظهر في أسفل الموقع.      | `جميع الحقوق محفوظة لمتجرنا © 2023`       |
+| `contactEmail`   | `String`  | البريد الإلكتروني للتواصل.                | `info@example.com`                        |
+| `phone`          | `String`  | رقم الهاتف للتواصل.                       | `+9647701234567`                          |
+| `facebookLink`   | `String`  | رابط صفحة الفيسبوك.                       | `https://www.facebook.com/yourpage`       |
+| `instagramLink`  | `String`  | رابط صفحة الإنستغرام.                     | `https://www.instagram.com/yourpage`      |
+| `whatsappLink`   | `String`  | رابط الواتساب (يمكن أن يكون رابط مباشر).  | `https://wa.me/9647701234567`             |
+| `tiktokLink`     | `String`  | رابط صفحة التيك توك.                      | `https://www.tiktok.com/@yourpage`        |
+| `telegramChatId` | `String`  | معرف الدردشة الخاص ببوت التليجرام (للتنبيهات). | `123456789`                               |
+
+#### مثال واجهة الأمامية (axios)
+```javascript
+import axios from 'axios';
+
+const updateSiteSettings = async (settingsData) => {
+  try {
+    const response = await axios.put('http://localhost:5000/api/settings', settingsData, {
+      withCredentials: true // لإرسال كوكيز المصادقة للمسؤول
+    });
+    console.log('تم تحديث إعدادات الموقع:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('خطأ في تحديث إعدادات الموقع:', error.response ? error.response.data : error.message);
+    return null;
+  }
+};
+
+// مثال على البيانات التي يمكن إرسالها
+const newSettings = {
+  footerText: 'حقوق النشر © 2024 متجرنا. جميع الحقوق محفوظة.',
+  contactEmail: 'support@newexample.com',
+  phone: '+9647809876543',
+  facebookLink: 'https://www.facebook.com/newpage',
+  instagramLink: 'https://www.instagram.com/newpage',
+  whatsappLink: 'https://wa.me/9647809876543',
+  tiktokLink: 'https://www.tiktok.com/@newpage',
+  telegramChatId: '987654321'
+};
+
+updateSiteSettings(newSettings);
+```
 
 

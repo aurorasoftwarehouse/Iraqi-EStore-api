@@ -602,6 +602,49 @@ const getOfferProductsFetch = async (page = 1, limit = 10) => {
 getOfferProductsFetch();
 ```
 
+
+
+          
+لقد قمت بإنشاء مسار جديد للحصول على العدد الإجمالي للمنتجات. إليك شرح له مع مثال باستخدام Axios:
+
+**شرح المسار الجديد:**
+
+- **المسار (Route):** `GET /api/products/count`
+- **الوصف:** هذا المسار مخصص لجلب العدد الإجمالي للمنتجات الموجودة في قاعدة البيانات.
+- **الوصول (Access):** عام (Public)، مما يعني أنه يمكن لأي مستخدم الوصول إليه دون الحاجة إلى مصادقة.
+- **الاستجابة (Response):** سيعيد كائن JSON يحتوي على حقل `count` يمثل العدد الإجمالي للمنتجات.
+
+**مثال استخدام Axios:**
+
+لجلب عدد المنتجات باستخدام مكتبة Axios في تطبيقك الأمامي (Frontend)، يمكنك استخدام الكود التالي:
+
+```javascript
+import axios from 'axios';
+
+const getProductCount = async () => {
+  try {
+    const response = await axios.get('/api/products/count');
+    console.log('Total product count:', response.data.count);
+    return response.data.count;
+  } catch (error) {
+    console.error('Error fetching product count:', error);
+    return null;
+  }
+};
+
+// يمكنك استدعاء الدالة:
+getProductCount();
+```
+
+**كيف يعمل هذا الكود؟**
+
+1.  `import axios from 'axios';`: يقوم باستيراد مكتبة Axios.
+2.  `axios.get('/api/products/count')`: يرسل طلب `GET` إلى المسار `/api/products/count`.
+3.  `response.data.count`: عند نجاح الطلب، تحتوي الاستجابة على كائن JSON، ونحن نستخرج قيمة `count` منه.
+4.  تتم معالجة الأخطاء المحتملة في كتلة `catch`.
+
+هذا المسار يوفر طريقة فعالة وسريعة للحصول على إحصائية بسيطة لعدد المنتجات دون الحاجة إلى جلب جميع بيانات المنتجات.
+        
 ---
 
 ## Category Endpoints
