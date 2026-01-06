@@ -646,6 +646,44 @@ getProductCount();
 هذا المسار يوفر طريقة فعالة وسريعة للحصول على إحصائية بسيطة لعدد المنتجات دون الحاجة إلى جلب جميع بيانات المنتجات.
         
 ---
+# get Offer Products Count
+**المسار الجديد: `GET /api/products/offers/count`**
+
+*   **الغرض:** يتيح لك هذا المسار استرداد العدد الإجمالي للمنتجات التي عليها عروض حاليًا (أي `discountActive` صحيح و `discountPrice` أقل من `price`).
+*   **الوصول:** هذا المسار متاح للعامة ولا يتطلب أي مصادقة.
+*   **الاستجابة:** سيعيد المسار كائن JSON يحتوي على عدد المنتجات التي تحتوي علي عروض.
+
+**مثال Axios:**
+
+يمكنك استخدام Axios من الواجهة الأمامية (frontend) لطلب عدد المنتجات المعروضة على النحو التالي:
+
+```javascript
+import axios from 'axios';
+
+const getOfferProductCount = async () => {
+  try {
+    const response = await axios.get('/api/products/offers/count');
+    console.log('عدد المنتجات :', response.data.count);
+    // يمكنك استخدام response.data.count لعرض العدد في واجهة المستخدم الخاصة بك
+  } catch (error) {
+    console.error('خطأ في جلب عدد المنتجات :', error);
+    // التعامل مع الأخطاء هنا
+  }
+};
+
+getOfferProductCount();
+```
+
+**شرح الكود:**
+
+1.  `import axios from 'axios';`: يستورد مكتبة Axios.
+2.  `getOfferProductCount`: دالة غير متزامنة (async function) لجلب العدد.
+3.  `axios.get('/api/products/offers/count')`: يقوم بإرسال طلب `GET` إلى المسار الجديد.
+4.  `response.data.count`: يحتوي على العدد الإجمالي للمنتجات المعروضة التي تم إرجاعها من الخادم.
+5.  `try...catch`: للتعامل مع أي أخطاء قد تحدث أثناء الطلب.
+        
+
+---
 
 ## Category Endpoints
 
@@ -718,44 +756,6 @@ const createCategoryFetch = async (categoryName) => {
 
 createCategoryFetch('Books');
 ```
----
-# get Offer Products Count
-**المسار الجديد: `GET /api/products/offers/count`**
-
-*   **الغرض:** يتيح لك هذا المسار استرداد العدد الإجمالي للمنتجات التي عليها عروض حاليًا (أي `discountActive` صحيح و `discountPrice` أقل من `price`).
-*   **الوصول:** هذا المسار متاح للعامة ولا يتطلب أي مصادقة.
-*   **الاستجابة:** سيعيد المسار كائن JSON يحتوي على عدد المنتجات التي تحتوي علي عروض.
-
-**مثال Axios:**
-
-يمكنك استخدام Axios من الواجهة الأمامية (frontend) لطلب عدد المنتجات المعروضة على النحو التالي:
-
-```javascript
-import axios from 'axios';
-
-const getOfferProductCount = async () => {
-  try {
-    const response = await axios.get('/api/products/offers/count');
-    console.log('عدد المنتجات :', response.data.count);
-    // يمكنك استخدام response.data.count لعرض العدد في واجهة المستخدم الخاصة بك
-  } catch (error) {
-    console.error('خطأ في جلب عدد المنتجات :', error);
-    // التعامل مع الأخطاء هنا
-  }
-};
-
-getOfferProductCount();
-```
-
-**شرح الكود:**
-
-1.  `import axios from 'axios';`: يستورد مكتبة Axios.
-2.  `getOfferProductCount`: دالة غير متزامنة (async function) لجلب العدد.
-3.  `axios.get('/api/products/offers/count')`: يقوم بإرسال طلب `GET` إلى المسار الجديد.
-4.  `response.data.count`: يحتوي على العدد الإجمالي للمنتجات المعروضة التي تم إرجاعها من الخادم.
-5.  `try...catch`: للتعامل مع أي أخطاء قد تحدث أثناء الطلب.
-        
-
 ---
 
 ### 2. Get All Categories
