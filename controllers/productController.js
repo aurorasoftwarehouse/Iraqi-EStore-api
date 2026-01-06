@@ -1,5 +1,6 @@
 import asyncHandler from 'express-async-handler';
 import { createProduct, getProducts, getProductById, updateProduct, deleteProduct, getOfferProducts , searchProducts , autocompleteProducts, getProductCount, getOfferProductCount } from '../services/productService.js';
+import { getCategoryById } from '../services/categoryService.js';
 import  uploadToImgBB  from '../utils/uploadToImgBB.js';
 // @desc    Create a new product
 // @route   POST /api/products
@@ -19,6 +20,14 @@ console.log(req.body);
     return res.status(422).json({
       error: "Validation Failure (فشل التحقق)",
       message: "name, price, category are mandatory (الاسم، السعر، الفئة مطلوبة)"
+    });
+  }
+
+  const existingCategory = await getCategoryById(category);
+  if (!existingCategory) {
+    return res.status(404).json({
+      error: "Category Not Found (الفئة غير موجودة)",
+      message: "The specified category does not exist (الفئة المحددة غير موجودة)"
     });
   }
 

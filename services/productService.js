@@ -24,13 +24,13 @@ export const createProduct = async (name, price, discountedPrice, discountActive
       finalDiscountPrice = price;
     }
   
-    console.log({
-      price,
-      discountedPrice,
-      discountActive,
-      finalDiscountPercent,
-      finalDiscountPrice,
-    });
+    // console.log({
+    //   price,
+    //   discountedPrice,
+    //   discountActive,
+    //   finalDiscountPercent,
+    //   finalDiscountPrice,
+    // });
   
     const product = new Product({
       name,
