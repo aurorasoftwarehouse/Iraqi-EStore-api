@@ -63,8 +63,8 @@ app.get('/', (req, res) => {
 app.use(notFound);
 app.use(errorHandler);
 
+startTelegramBot();
 // Start the server
 app.listen(PORT, () => {
   console.log(`Server running on port http://localhost:${PORT}`);
-  startTelegramBot();
 });

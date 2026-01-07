@@ -21,7 +21,7 @@ export const startTelegramBot = () => {
       }
 
       // Check if the chat is already linked 
-      if (owner.ownerChatId === chatId) {
+      if (owner.ownerChatId === String(chatId)) {
         // If already linked, and the message is not the password (to avoid re-linking attempts)
         if (!(await owner.matchPassword(text))) {
           ctx.reply('عزيزي، هذا البوت مخصص فقط لاستقبال إشعارات الطلبات الجديدة. إذا عندك أي استفسار أو تحتاج مساعدة، يرجى التواصل وي المطورين مباشرةً. شكراً لتفهمك.');
@@ -32,7 +32,7 @@ export const startTelegramBot = () => {
       } else {
         // If chat is NOT linked, try to link it with the password
         if (await owner.matchPassword(text)) {
-          owner.ownerChatId = chatId;
+          owner.ownerChatId = String(chatId);
           await owner.save();
           ctx.reply('✅ تم الربط بنجاح، من هسه الإشعارات توصلك  ملاحظة: هذا البوت مخصص فقط لاستقبال إشعارات الطلبات. لأي استفسارات أو إضافات أخرى، يرجى التواصل مع المطورين الكرام.');
           console.log('Store securely linked to chat:', chatId);
