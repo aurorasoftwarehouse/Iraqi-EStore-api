@@ -1,14 +1,21 @@
 import asyncHandler from 'express-async-handler';
 import { createCategory, getCategories, getCategoryById, updateCategory, deleteCategory } from '../services/categoryService.js';
+import uploadToImgBB from '../utils/uploadToImgBB.js';
 
 // @desc    Create a new category
 // @route   POST /api/categories
 // @access  Private/Admin
 export const create = asyncHandler(async (req, res) => {
   const { name } = req.body;
+  let image = null;
+
+  if (req.file) {
+    const uploadedImage = await uploadToImgBB(req.file.buffer);
+    image = uploadedImage.url;
+  }
 
   try {
-    const category = await createCategory(name);
+    const category = await createCategory(name, image);
     res.status(201).json(category);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -48,9 +55,15 @@ export const getById = asyncHandler(async (req, res) => {
 // @access  Private/Admin
 export const update = asyncHandler(async (req, res) => {
   const { name } = req.body;
+  let image = null;
+
+  if (req.file) {
+    const uploadedImage = await uploadToImgBB(req.file.buffer);
+    image = uploadedImage.url;
+  }
 
   try {
-    const category = await updateCategory(req.params.id, name);
+    const category = await updateCategory(req.params.id, name, image);
     res.json(category);
   } catch (error) {
     res.status(400).json({ message: error.message });

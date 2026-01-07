@@ -6,6 +6,10 @@ const CategorySchema = new mongoose.Schema({
     required: true,
     unique: true,
     trim: true
+  },
+  image: {
+    type: String,
+    required: false,
   }
 }, {
   timestamps: true
