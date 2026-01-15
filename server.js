@@ -12,6 +12,7 @@ import cartRoutes from './routes/cartRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import siteSettingsRoutes from './routes/siteSettingsRoutes.js';
 import storeRoutes from './routes/storeRoutes.js';
+import reviewRoutes from './routes/reviewRoutes.js';
 import { notFound, errorHandler } from './middleware/errorHandler.js';
 import { startTelegramBot, bot } from './services/telegramService.js';
 
@@ -54,6 +55,7 @@ app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/settings', siteSettingsRoutes);
 app.use('/api/storeBoot', storeRoutes);
+app.use('/api/reviews', reviewRoutes);
 
 app.get('/', (req, res) => {
   res.send('E-commerce API is running...');
@@ -63,15 +65,17 @@ app.get('/', (req, res) => {
 app.use(notFound);
 app.use(errorHandler);
 
-// Start the server
-app.listen(PORT, () => {
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
     console.log(`Server running on port http://localhost:${PORT}`);
     console.log('About to initialize Telegram bot...');
     startTelegramBot().catch((err) => {
-        console.error('Telegram bot start failed', err);
+      console.error('Telegram bot start failed', err);
     });
-});
+  });
+}
 
 // Enable graceful stop
 // process.once('SIGINT', () => bot.stop('SIGINT'));
 // process.once('SIGTERM', () => bot.stop('SIGTERM'));
+export default app;

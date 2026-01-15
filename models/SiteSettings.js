@@ -32,6 +32,14 @@ const SiteSettingsSchema = new mongoose.Schema({
   telegramChatId: {
     type: String,
     required: false
+  },
+  requirePurchaseForReview: {
+    type: Boolean,
+    default: false
+  },
+  reviewReportReasons: {
+    type: [String],
+    default: ['spam', 'offensive', 'fake', 'privacy', 'other']
   }
 }, {
   timestamps: true

@@ -9,7 +9,7 @@ export const getSiteSettings = async () => {
   return settings;
 };
 
-export const updateSiteSettings = async (footerText, contactEmail, phone, facebookLink, instagramLink, whatsappLink, tiktokLink, telegramChatId) => {
+export const updateSiteSettings = async (footerText, contactEmail, phone, facebookLink, instagramLink, whatsappLink, tiktokLink, telegramChatId, requirePurchaseForReview, reviewReportReasons) => {
   let settings = await SiteSettings.findOne();
   if (!settings) {
     settings = new SiteSettings({});
@@ -22,6 +22,12 @@ export const updateSiteSettings = async (footerText, contactEmail, phone, facebo
   settings.whatsappLink = whatsappLink || settings.whatsappLink;
   settings.tiktokLink = tiktokLink || settings.tiktokLink;
   settings.telegramChatId = telegramChatId || settings.telegramChatId;
+  if (typeof requirePurchaseForReview === 'boolean') {
+    settings.requirePurchaseForReview = requirePurchaseForReview;
+  }
+  if (Array.isArray(reviewReportReasons) && reviewReportReasons.length > 0) {
+    settings.reviewReportReasons = reviewReportReasons;
+  }
   await settings.save();
   return settings;
 };

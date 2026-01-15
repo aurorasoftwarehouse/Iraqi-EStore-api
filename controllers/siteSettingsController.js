@@ -17,10 +17,10 @@ export const getSettings = asyncHandler(async (req, res) => {
 // @route   PUT /api/settings
 // @access  Private/Admin
 export const updateSettings = asyncHandler(async (req, res) => {
-  const { footerText, contactEmail, phone, facebookLink, instagramLink, whatsappLink, tiktokLink, telegramChatId } = req.body;
+  const { footerText, contactEmail, phone, facebookLink, instagramLink, whatsappLink, tiktokLink, telegramChatId, requirePurchaseForReview, reviewReportReasons } = req.body;
 
   try {
-    const settings = await updateSiteSettings(footerText, contactEmail, phone, facebookLink, instagramLink, whatsappLink, tiktokLink, telegramChatId);
+    const settings = await updateSiteSettings(footerText, contactEmail, phone, facebookLink, instagramLink, whatsappLink, tiktokLink, telegramChatId, requirePurchaseForReview, reviewReportReasons);
     res.json(settings);
   } catch (error) {
     res.status(400).json({ message: error.message });
